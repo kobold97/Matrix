@@ -49,3 +49,4 @@ catch(CMatrix::BadIndex)
 }
 }
 //A moze by tak dodac odejmowanie macierzy
+//Tak to dobry pomysl

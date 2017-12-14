@@ -202,3 +202,4 @@ void CMatrix::write(int i,int j, float n)
     pointer->mat[i][j] = n;
 }
 //A moze by tak dodac odejmowanie macierzy
+//Tak to dobry pomysl
