@@ -48,3 +48,4 @@ catch(CMatrix::BadIndex)
 		cout << "Macierz nie ma takiego indeksu" << endl;
 }
 }
+// A moze by tak dodac dodawanie macierzy
