@@ -27,17 +27,19 @@ struct CMatrix::matrix
 {
     int row, col;
     float **mat;
-    int n, i;
+    int n;
 
     matrix(int nrow, int ncol)
     {
         row = nrow;
         col = ncol;
         n = 1;
+	
+	int i;
         mat = new float*[row];
         try
         {
-            for( i = 0; i < row; ++i)
+            for(i = 0; i < row; ++i)
                 mat[i] = new float[col];
         }
         catch(std::bad_alloc)
@@ -45,7 +47,7 @@ struct CMatrix::matrix
             for (int j=0; j<i; j++)
                 delete [] mat[j];
             delete [] mat;
-
+	    throw;
         }
     }
 
@@ -77,23 +79,23 @@ class CMatrix::Cref
 public:
     friend class CMatrix;
     CMatrix& m;
-    int row, col;
+    int row;
 
-    Cref(CMatrix& mm, int ii, int jj): m(mm),  row(ii), col(jj)
-    {
-    };
+    class Cref2;
 
-    Cref operator[](int ncol)
-    {
-        col=ncol;
-        if((m.pointer->row<=row) || (m.pointer->col<=col))
+    Cref(CMatrix& mm, int ii): m(mm),  row(ii)
+    {}
+
+    Cref2 operator[](int col);
+  /*  {
+        if(m.pointer->row<=row) 
         {
             throw BadIndex();
         }
-        return *this;
+        return Cref2(m, Cref.row, col);
     }
-
-    operator float() const
+*/
+/*    operator float() const
     {
         return m.pointer->mat[row][col];
     }
@@ -102,12 +104,46 @@ public:
     {
         m.write(row,col,num);
         return *this;
+    }*/
+};
+
+class CMatrix::Cref::Cref2
+{
+public:
+    friend class CMatrix;
+    CMatrix& m;
+    int row, col;
+
+    Cref2(CMatrix& mm,int jj, int ii): m(mm), row(jj),  col(ii)
+    {
+    };
+
+    operator float() const
+    {
+        return m.pointer->mat[row][col];
+    }
+
+    Cref2& operator = (float num)
+    {
+        m.write(row,col,num);
+        return *this;
     }
 };
 
+    CMatrix::Cref::Cref2 CMatrix::Cref::operator[](int col)
+    {
+        if(m.pointer->row<=row) 
+        {
+            throw BadIndex();
+        }
+        return CMatrix::Cref::Cref2(m, row, col);
+    }
+
+
+
 CMatrix::Cref CMatrix::operator[] (int row)
 {
-    return Cref(*this, row, 0);
+    return Cref(*this, row);
 }
 
 CMatrix::CMatrix(int row=0, int col=0, float cross = 0, float rest = 0)
