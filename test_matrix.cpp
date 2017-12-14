@@ -49,3 +49,4 @@ catch(CMatrix::BadIndex)
 }
 }
 // A moze by tak dodac dodawanie macierzy
+// Tak to zdecydowanie dobry pomysl
